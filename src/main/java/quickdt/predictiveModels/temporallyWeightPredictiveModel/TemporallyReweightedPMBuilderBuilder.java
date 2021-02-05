@@ -10,7 +10,6 @@ import quickdt.predictiveModels.UpdatablePredictiveModelBuilderBuilder;
 import java.util.Map;
 
 
-
 public class TemporallyReweightedPMBuilderBuilder implements UpdatablePredictiveModelBuilderBuilder<TemporallyReweightedPM, TemporallyReweightedPMBuilder> {
 
     public static final String HALF_LIFE_OF_NEGATIVE = "halfLifeOfNegative";
@@ -36,7 +35,7 @@ public class TemporallyReweightedPMBuilderBuilder implements UpdatablePredictive
         final double halfLifeOfPositive = (Double) predictiveModelConfig.get(HALF_LIFE_OF_POSITIVE);
         final double halfLifeOfNegative = (Double) predictiveModelConfig.get(HALF_LIFE_OF_NEGATIVE);
         return new TemporallyReweightedPMBuilder(wrappedBuilderBuilder.buildBuilder(predictiveModelConfig), new SimpleDateFormatExtractor())
-                                                 .halfLifeOfNegative(halfLifeOfNegative)
-                                                 .halfLifeOfPositive(halfLifeOfPositive);
+                .halfLifeOfNegative(halfLifeOfNegative)
+                .halfLifeOfPositive(halfLifeOfPositive);
     }
 }

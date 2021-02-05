@@ -42,7 +42,7 @@ public class DownsamplingPredictiveModelBuilder implements UpdatablePredictiveMo
             return new DownsamplingPredictiveModel(wrappedPredictiveModel, majorityClassification, minorityEntry.getKey(), 0);
         }
 
-        final double dropProbability = 1.0 - ((naturalMinorityProportion - targetMinorityProportion*naturalMinorityProportion) / (targetMinorityProportion - targetMinorityProportion *naturalMinorityProportion));
+        final double dropProbability = 1.0 - ((naturalMinorityProportion - targetMinorityProportion * naturalMinorityProportion) / (targetMinorityProportion - targetMinorityProportion * naturalMinorityProportion));
 
         Iterable<? extends AbstractInstance> downsampledTrainingData = Iterables.filter(trainingData, new RandomDroppingInstanceFilter(majorityClassification, dropProbability));
 
@@ -76,7 +76,7 @@ public class DownsamplingPredictiveModelBuilder implements UpdatablePredictiveMo
         }
         Map<Serializable, Double> classificationProportions = Maps.newHashMap();
         for (Map.Entry<Serializable, AtomicLong> classCount : classificationCounts.entrySet()) {
-            classificationProportions.put(classCount.getKey(),  classCount.getValue().doubleValue() / (double) total);
+            classificationProportions.put(classCount.getKey(), classCount.getValue().doubleValue() / (double) total);
         }
         return classificationProportions;
     }
@@ -85,7 +85,7 @@ public class DownsamplingPredictiveModelBuilder implements UpdatablePredictiveMo
     public void updatePredictiveModel(DownsamplingPredictiveModel predictiveModel, Iterable<? extends AbstractInstance> newData, List<? extends AbstractInstance> trainingData, boolean splitNodes) {
         if (predictiveModelBuilder instanceof UpdatablePredictiveModelBuilder) {
             Iterable<? extends AbstractInstance> downsampledNewData = Iterables.filter(newData, new RandomDroppingInstanceFilter(predictiveModel.getMajorityClassification(), predictiveModel.getDropProbability()));
-            ((UpdatablePredictiveModelBuilder)predictiveModelBuilder).updatePredictiveModel(predictiveModel.wrappedPredictiveModel, downsampledNewData, trainingData, splitNodes);
+            ((UpdatablePredictiveModelBuilder) predictiveModelBuilder).updatePredictiveModel(predictiveModel.wrappedPredictiveModel, downsampledNewData, trainingData, splitNodes);
         } else {
             throw new RuntimeException("Cannot update predictive model without UpdatablePredictiveModelBuilder");
         }

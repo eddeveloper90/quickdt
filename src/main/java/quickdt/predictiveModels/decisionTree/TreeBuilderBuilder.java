@@ -3,7 +3,6 @@ package quickdt.predictiveModels.decisionTree;
 import com.google.common.collect.Maps;
 import quickdt.predictiveModelOptimizer.FieldValueRecommender;
 import quickdt.predictiveModelOptimizer.fieldValueRecommenders.FixedOrderRecommender;
-import quickdt.predictiveModels.PredictiveModelBuilderBuilder;
 import quickdt.predictiveModels.UpdatablePredictiveModelBuilderBuilder;
 import quickdt.predictiveModels.decisionTree.scorers.GiniImpurityScorer;
 import quickdt.predictiveModels.decisionTree.scorers.InformationGainScorer;
@@ -22,7 +21,7 @@ public class TreeBuilderBuilder implements UpdatablePredictiveModelBuilderBuilde
     private static final String MIN_SCORE = "minScore";
     private static final String MIN_CAT_ATTR_OCC = "minCatAttrOcc";
     private static final String MIN_LEAF_INSTANCES = "minLeafInstances";
-    private static final String SCORER= "scorer";
+    private static final String SCORER = "scorer";
 
     @Override
     public Map<String, FieldValueRecommender> createDefaultParametersToOptimize() {
@@ -38,7 +37,7 @@ public class TreeBuilderBuilder implements UpdatablePredictiveModelBuilderBuilde
 
     @Override
     public TreeBuilder buildBuilder(final Map<String, Object> cfg) throws NullPointerException {
-        return new TreeBuilder((Scorer)cfg.get(SCORER))
+        return new TreeBuilder((Scorer) cfg.get(SCORER))
                 .ignoreAttributeAtNodeProbability((Double) cfg.get(IGNORE_ATTR_PROB))
                 .maxDepth((Integer) cfg.get(MAX_DEPTH))
                 .minimumScore((Double) cfg.get(MIN_SCORE))

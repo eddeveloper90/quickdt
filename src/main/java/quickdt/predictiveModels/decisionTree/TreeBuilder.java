@@ -1,11 +1,13 @@
 package quickdt.predictiveModels.decisionTree;
 
-import com.google.common.base.*;
-import com.google.common.collect.*;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.twitter.common.stats.ReservoirSampler;
-import org.apache.commons.lang.mutable.MutableDouble;
 import org.apache.commons.lang.mutable.MutableInt;
-import org.apache.hadoop.util.hash.Hash;
 import org.javatuples.Pair;
 import quickdt.Misc;
 import quickdt.data.AbstractInstance;
@@ -278,9 +280,9 @@ public final class TreeBuilder implements UpdatablePredictiveModelBuilder<Tree> 
                 instanceNotPermittedToContributeToInsetDefinition = !splitModelWhiteList.contains(bestNode.attribute);
             }
 
-             boolean instanceIsInTheSupportingDataSet = usingSplitModel
-                     && isASupportingInstanceFromADifferentSplit
-                     && instanceNotPermittedToContributeToInsetDefinition; //and the attribute isn't in the whitelist
+            boolean instanceIsInTheSupportingDataSet = usingSplitModel
+                    && isASupportingInstanceFromADifferentSplit
+                    && instanceNotPermittedToContributeToInsetDefinition; //and the attribute isn't in the whitelist
             if (instanceIsInTheSupportingDataSet) {
                 supportingDataSet.add(instance);
             } else {
@@ -322,7 +324,7 @@ public final class TreeBuilder implements UpdatablePredictiveModelBuilder<Tree> 
 
             if (!smallTrainingSet && attributeCharacteristicsEntry.getValue().isNumber) {
                 numericPair = createNumericNode(parent, attributeCharacteristicsEntry.getKey(), trainingData, splits.get(attributeCharacteristicsEntry.getKey()));
-            } else if (!attributeCharacteristicsEntry.getValue().isNumber){
+            } else if (!attributeCharacteristicsEntry.getValue().isNumber) {
                 categoricalPair = createCategoricalNode(parent, attributeCharacteristicsEntry.getKey(), trainingData);
             }
 

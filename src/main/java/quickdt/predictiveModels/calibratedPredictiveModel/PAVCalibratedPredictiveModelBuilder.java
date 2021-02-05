@@ -29,7 +29,7 @@ public class PAVCalibratedPredictiveModelBuilder implements UpdatablePredictiveM
     }
 
     public PAVCalibratedPredictiveModelBuilder binsInCalibrator(Integer binsInCalibrator) {
-        if (binsInCalibrator!=null) {
+        if (binsInCalibrator != null) {
             this.binsInCalibrator = binsInCalibrator;
         }
         return this;
@@ -52,7 +52,7 @@ public class PAVCalibratedPredictiveModelBuilder implements UpdatablePredictiveM
     public void updatePredictiveModel(CalibratedPredictiveModel predictiveModel, Iterable<? extends AbstractInstance> newData, List<? extends AbstractInstance> trainingData, boolean splitNodes) {
         if (predictiveModelBuilder instanceof UpdatablePredictiveModelBuilder) {
             updateCalibrator(predictiveModel, newData);
-            ((UpdatablePredictiveModelBuilder)predictiveModelBuilder).updatePredictiveModel(predictiveModel.predictiveModel, newData, trainingData, splitNodes);
+            ((UpdatablePredictiveModelBuilder) predictiveModelBuilder).updatePredictiveModel(predictiveModel.predictiveModel, newData, trainingData, splitNodes);
         } else {
             throw new RuntimeException("Cannot update predictive model without UpdatablePredictiveModelBuilder");
         }
@@ -75,8 +75,8 @@ public class PAVCalibratedPredictiveModelBuilder implements UpdatablePredictiveM
     private void updateCalibrator(PredictiveModel predictiveModel, Iterable<? extends AbstractInstance> trainingInstances) {
         List<PAVCalibrator.Observation> mobservations = getObservations(predictiveModel, trainingInstances);
 
-        PAVCalibrator calibrator = (PAVCalibrator)((CalibratedPredictiveModel)predictiveModel).calibrator;
-        for(PAVCalibrator.Observation observation : mobservations) {
+        PAVCalibrator calibrator = (PAVCalibrator) ((CalibratedPredictiveModel) predictiveModel).calibrator;
+        for (PAVCalibrator.Observation observation : mobservations) {
             calibrator.addObservation(observation);
         }
     }
@@ -84,7 +84,7 @@ public class PAVCalibratedPredictiveModelBuilder implements UpdatablePredictiveM
 
     private Calibrator createCalibrator(PredictiveModel predictiveModel, Iterable<? extends AbstractInstance> trainingInstances) {
         List<PAVCalibrator.Observation> mobservations = getObservations(predictiveModel, trainingInstances);
-        return new PAVCalibrator(mobservations, Math.max(1, Iterables.size(trainingInstances)/binsInCalibrator));
+        return new PAVCalibrator(mobservations, Math.max(1, Iterables.size(trainingInstances) / binsInCalibrator));
     }
 
     protected List<PAVCalibrator.Observation> getObservations(PredictiveModel predictiveModel, Iterable<? extends AbstractInstance> trainingInstances) {
@@ -92,11 +92,10 @@ public class PAVCalibratedPredictiveModelBuilder implements UpdatablePredictiveM
         double prediction = 0;
         double groundTruth = 0;
         PAVCalibrator.Observation observation;
-        for(AbstractInstance instance : trainingInstances)  {
+        for (AbstractInstance instance : trainingInstances) {
             try {
                 groundTruth = getGroundTruth(instance.getClassification());
-            }
-            catch (RuntimeException r){
+            } catch (RuntimeException r) {
                 r.printStackTrace();
                 System.exit(0);
             }
@@ -112,6 +111,6 @@ public class PAVCalibratedPredictiveModelBuilder implements UpdatablePredictiveM
         if (!(classification instanceof Double) && !(classification instanceof Integer)) {
             throw new RuntimeException("classification is not an instance of Integer or Double.  Classification value is " + classification);
         }
-        return ((Number)(classification)).doubleValue();
+        return ((Number) (classification)).doubleValue();
     }
 }

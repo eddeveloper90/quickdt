@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.NoSuchElementException;
+import java.util.Random;
+import java.util.TreeSet;
 
 public class PAVCalibrator implements Serializable, Calibrator {
     private static final Logger logger = LoggerFactory.getLogger(PAVCalibrator.class);
@@ -98,10 +100,9 @@ public class PAVCalibrator implements Serializable, Calibrator {
         }
         Observation ceiling = calibrationSet.ceiling(toCorrect);
         if (ceiling == null) {
-            try{
+            try {
                 return Math.max(input, calibrationSet.last().output);
-            }
-            catch (NoSuchElementException e){
+            } catch (NoSuchElementException e) {
                 System.out.println("break point me");
             }
 
@@ -183,7 +184,7 @@ public class PAVCalibrator implements Serializable, Calibrator {
          * This type of observation can be used to correct a previous observation.
          * So adding:
          * Observation(1, 0) and Observation.WEIGHTLESS(1, 2)
-         *
+         * <p>
          * Has the exact same effect as adding:
          * Observation(1, 1)
          *

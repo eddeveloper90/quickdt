@@ -2,15 +2,15 @@ package quickdt.predictiveModels.decisionTree.tree;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.apache.hadoop.util.hash.Hash;
 import org.javatuples.Pair;
 import quickdt.collections.ValueSummingMap;
 import quickdt.data.AbstractInstance;
-import static quickdt.predictiveModels.decisionTree.TreeBuilder.*;
 
 import java.io.Serializable;
 import java.util.*;
 import java.util.Map.Entry;
+
+import static quickdt.predictiveModels.decisionTree.TreeBuilder.MISSING_VALUE;
 
 
 public class ClassificationCounter implements Serializable {
@@ -25,6 +25,7 @@ public class ClassificationCounter implements Serializable {
         }
         return newCC;
     }
+
     public static Pair<ClassificationCounter, Map<Serializable, ClassificationCounter>> countAllByAttributeValues(
             final Iterable<? extends AbstractInstance> instances, final String attribute, String splitAttribute, Serializable splitAttributeValue) {
         final Map<Serializable, ClassificationCounter> result = Maps.newHashMap();
@@ -32,9 +33,9 @@ public class ClassificationCounter implements Serializable {
         for (final AbstractInstance instance : instances) {
             final Serializable attrVal = instance.getAttributes().get(attribute);
             ClassificationCounter cc = null;
-            boolean acceptableMissingValue = attrVal ==null && isAnAcceptableMissingValue(instance, splitAttribute, splitAttributeValue);
+            boolean acceptableMissingValue = attrVal == null && isAnAcceptableMissingValue(instance, splitAttribute, splitAttributeValue);
 
-            if (attrVal!=null)
+            if (attrVal != null)
                 cc = result.get(attrVal);
             else if (acceptableMissingValue)
                 cc = result.get(MISSING_VALUE);
@@ -53,15 +54,15 @@ public class ClassificationCounter implements Serializable {
         return Pair.with(totals, result);
     }
 
-	public static Pair<ClassificationCounter, List<AttributeValueWithClassificationCounter>> getSortedListOfAttributeValuesWithClassificationCounters(
+    public static Pair<ClassificationCounter, List<AttributeValueWithClassificationCounter>> getSortedListOfAttributeValuesWithClassificationCounters(
             final Iterable<? extends AbstractInstance> instances, final String attribute, String splitAttribute, Serializable splitAttributeValue, final Serializable minorityClassification) {
 
-        Pair<ClassificationCounter, Map<Serializable, ClassificationCounter>> totalsClassificationCounterPairedWithMapofClassificationCounters = countAllByAttributeValues(instances,attribute,splitAttribute,splitAttributeValue);
+        Pair<ClassificationCounter, Map<Serializable, ClassificationCounter>> totalsClassificationCounterPairedWithMapofClassificationCounters = countAllByAttributeValues(instances, attribute, splitAttribute, splitAttributeValue);
         final Map<Serializable, ClassificationCounter> result = totalsClassificationCounterPairedWithMapofClassificationCounters.getValue1();
-		final ClassificationCounter totals = totalsClassificationCounterPairedWithMapofClassificationCounters.getValue0();
+        final ClassificationCounter totals = totalsClassificationCounterPairedWithMapofClassificationCounters.getValue0();
 
         List<AttributeValueWithClassificationCounter> attributesWithClassificationCounters = Lists.newArrayList();
-        for(Serializable key : result.keySet()) {
+        for (Serializable key : result.keySet()) {
             attributesWithClassificationCounters.add(new AttributeValueWithClassificationCounter(key, result.get(key)));
         }
         Collections.sort(attributesWithClassificationCounters, new Comparator<AttributeValueWithClassificationCounter>() {
@@ -79,11 +80,11 @@ public class ClassificationCounter implements Serializable {
             }
         });
 
-		return Pair.with(totals, attributesWithClassificationCounters);
-	}
+        return Pair.with(totals, attributesWithClassificationCounters);
+    }
 
-    private static boolean isAnAcceptableMissingValue(AbstractInstance instance, String splitAttribute, Serializable splitAttributeValue){
-        return  splitAttribute == null
+    private static boolean isAnAcceptableMissingValue(AbstractInstance instance, String splitAttribute, Serializable splitAttributeValue) {
+        return splitAttribute == null
                 || splitAttributeValue == null
                 || instance.getAttributes().get(splitAttribute).equals(splitAttributeValue);
     }
@@ -97,62 +98,62 @@ public class ClassificationCounter implements Serializable {
     }
 
 
-	public static ClassificationCounter countAll(final Iterable<? extends AbstractInstance> instances) {
-		final ClassificationCounter result = new ClassificationCounter();
-		for (final AbstractInstance instance : instances) {
-			result.addClassification(instance.getClassification(), instance.getWeight());
-		}
-		return result;
-	}
+    public static ClassificationCounter countAll(final Iterable<? extends AbstractInstance> instances) {
+        final ClassificationCounter result = new ClassificationCounter();
+        for (final AbstractInstance instance : instances) {
+            result.addClassification(instance.getClassification(), instance.getWeight());
+        }
+        return result;
+    }
 
-	public void addClassification(final Serializable classification, double weight) {
-		counts.addToValue(classification, weight);
-	}
+    public void addClassification(final Serializable classification, double weight) {
+        counts.addToValue(classification, weight);
+    }
 
-	public double getCount(final Serializable classification) {
-		Number count = counts.get(classification);
+    public double getCount(final Serializable classification) {
+        Number count = counts.get(classification);
         if (count == null) {
             return 0;
         } else {
             return count.doubleValue();
         }
-	}
+    }
 
-	public Set<Serializable> allClassifications() {
-		return counts.keySet();
-	}
+    public Set<Serializable> allClassifications() {
+        return counts.keySet();
+    }
 
-	public ClassificationCounter add(final ClassificationCounter other) {
-		final ClassificationCounter result = new ClassificationCounter();
-		result.counts.putAll(counts);
-		for (final Entry<Serializable, Number> e : other.counts.entrySet()) {
-			result.counts.addToValue(e.getKey(), e.getValue().doubleValue());
-		}
-		return result;
-	}
-
-	public ClassificationCounter subtract(final ClassificationCounter other) {
-		final ClassificationCounter result = new ClassificationCounter();
+    public ClassificationCounter add(final ClassificationCounter other) {
+        final ClassificationCounter result = new ClassificationCounter();
         result.counts.putAll(counts);
-		for (final Entry<Serializable, Number> e : other.counts.entrySet()) {
-			result.counts.addToValue(e.getKey(), -other.getCount(e.getKey()));
-		}
-		return result;
-	}
+        for (final Entry<Serializable, Number> e : other.counts.entrySet()) {
+            result.counts.addToValue(e.getKey(), e.getValue().doubleValue());
+        }
+        return result;
+    }
 
-	public double getTotal() {
-		return counts.getSumOfValues();
-	}
+    public ClassificationCounter subtract(final ClassificationCounter other) {
+        final ClassificationCounter result = new ClassificationCounter();
+        result.counts.putAll(counts);
+        for (final Entry<Serializable, Number> e : other.counts.entrySet()) {
+            result.counts.addToValue(e.getKey(), -other.getCount(e.getKey()));
+        }
+        return result;
+    }
 
-	public Pair<Serializable, Double> mostPopular() {
-		Entry<Serializable, Number> best = null;
-		for (final Entry<Serializable, Number> e : counts.entrySet()) {
-			if (best == null || e.getValue().doubleValue() > best.getValue().doubleValue()) {
-				best = e;
-			}
-		}
-		return Pair.with(best.getKey(), best.getValue().doubleValue());
-	}
+    public double getTotal() {
+        return counts.getSumOfValues();
+    }
+
+    public Pair<Serializable, Double> mostPopular() {
+        Entry<Serializable, Number> best = null;
+        for (final Entry<Serializable, Number> e : counts.entrySet()) {
+            if (best == null || e.getValue().doubleValue() > best.getValue().doubleValue()) {
+                best = e;
+            }
+        }
+        return Pair.with(best.getKey(), best.getValue().doubleValue());
+    }
 
     @Override
     public boolean equals(Object o) {

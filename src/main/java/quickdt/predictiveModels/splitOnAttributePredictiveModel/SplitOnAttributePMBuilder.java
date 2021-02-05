@@ -20,7 +20,7 @@ import java.util.*;
  * Created by ian on 5/29/14.
  */
 public class SplitOnAttributePMBuilder implements UpdatablePredictiveModelBuilder<SplitOnAttributePM> {
-    private static final  Logger logger =  LoggerFactory.getLogger(SplitOnAttributePMBuilder.class);
+    private static final Logger logger = LoggerFactory.getLogger(SplitOnAttributePMBuilder.class);
 
     public static final Double NO_VALUE_PLACEHOLDER = Double.MIN_VALUE;
 
@@ -46,7 +46,7 @@ public class SplitOnAttributePMBuilder implements UpdatablePredictiveModelBuilde
 
         Map<Serializable, PredictiveModel> splitModels = Maps.newHashMap();
         for (Map.Entry<Serializable, ArrayList<AbstractInstance>> trainingDataEntry : splitTrainingData.entrySet()) {
-            logger.info("Building predictive model for "+attributeKey+"="+trainingDataEntry.getKey());
+            logger.info("Building predictive model for " + attributeKey + "=" + trainingDataEntry.getKey());
             setID(trainingDataEntry.getKey());
             splitModels.put(trainingDataEntry.getKey(), wrappedBuilder.buildPredictiveModel(trainingDataEntry.getValue()));
         }
@@ -77,24 +77,24 @@ public class SplitOnAttributePMBuilder implements UpdatablePredictiveModelBuilde
     }
 
     /*
-    * Add data to each split data set based on the desired cross data values. Maintain the same ratio of classifications in the split set by
-    * selecting that ratio from outside sets. Only keep the attributes in the supporting instances that in in the white list
-    * */
+     * Add data to each split data set based on the desired cross data values. Maintain the same ratio of classifications in the split set by
+     * selecting that ratio from outside sets. Only keep the attributes in the supporting instances that in in the white list
+     * */
     private void crossPollinateData(Map<Serializable, ArrayList<AbstractInstance>> splitTrainingData, ArrayList<AbstractInstance> allData) {
-        for(Map.Entry<Serializable, ArrayList<AbstractInstance>> entry : splitTrainingData.entrySet()) {
+        for (Map.Entry<Serializable, ArrayList<AbstractInstance>> entry : splitTrainingData.entrySet()) {
             ClassificationCounter splitClassificationCounter = ClassificationCounter.countAll(entry.getValue());
             long amountCrossData = (long) Math.max(splitClassificationCounter.getTotal() * percentCrossData, minimumAmountTotalCrossData);
             Set<AbstractInstance> crossData = new HashSet<>();
             ClassificationCounter crossDataCount = new ClassificationCounter();
-            for(int i = allData.size()-1; i >= 0; i--) {
+            for (int i = allData.size() - 1; i >= 0; i--) {
                 AbstractInstance instance = allData.get(i);
                 double classificationRatio = splitClassificationCounter.getCount(instance.getClassification()) / splitClassificationCounter.getTotal();
                 double targetCount = Math.max(classificationRatio * amountCrossData, minimumAmountCrossDataPerClassification);
-                if(shouldAddInstance(entry.getKey(), instance, crossDataCount, targetCount)) {
+                if (shouldAddInstance(entry.getKey(), instance, crossDataCount, targetCount)) {
                     crossData.add(cleanSupportingData(instance));
                     crossDataCount.addClassification(instance.getClassification(), instance.getWeight());
                 }
-                if(crossDataCount.getTotal() >= amountCrossData) {
+                if (crossDataCount.getTotal() >= amountCrossData) {
                     break;
                 }
             }
@@ -105,7 +105,7 @@ public class SplitOnAttributePMBuilder implements UpdatablePredictiveModelBuilde
 
     /*
      * Add instances such that the ratio of classifications is unchanged
-    * */
+     * */
     private boolean shouldAddInstance(Serializable attributeValue, AbstractInstance instance, ClassificationCounter crossDataCount, double targetCount) {
         if (!attributeValue.equals(instance.getAttributes().get(attributeKey))) {
             if (targetCount > crossDataCount.getCount(instance.getClassification())) {
@@ -142,13 +142,13 @@ public class SplitOnAttributePMBuilder implements UpdatablePredictiveModelBuilde
             Map<Serializable, ArrayList<AbstractInstance>> splitNewData = splitTrainingData(newData);
             for (Map.Entry<Serializable, ArrayList<AbstractInstance>> newDataEntry : splitNewData.entrySet()) {
                 PredictiveModel pm = predictiveModel.getSplitModels().get(newDataEntry.getKey());
-                if(pm == null) {
-                    logger.info("Building predictive model for "+attributeKey+"="+newDataEntry.getKey());
+                if (pm == null) {
+                    logger.info("Building predictive model for " + attributeKey + "=" + newDataEntry.getKey());
                     setID(newDataEntry.getKey());
                     pm = wrappedBuilder.buildPredictiveModel(newDataEntry.getValue());
                     predictiveModel.getSplitModels().put(newDataEntry.getKey(), pm);
                 } else {
-                    logger.info("Updating predictive model for "+attributeKey+"="+newDataEntry.getKey());
+                    logger.info("Updating predictive model for " + attributeKey + "=" + newDataEntry.getKey());
                     ((UpdatablePredictiveModelBuilder) wrappedBuilder).updatePredictiveModel(pm, newDataEntry.getValue(), trainingData, splitNodes);
                 }
             }
@@ -163,7 +163,7 @@ public class SplitOnAttributePMBuilder implements UpdatablePredictiveModelBuilde
     @Override
     public void stripData(SplitOnAttributePM predictiveModel) {
         if (wrappedBuilder instanceof UpdatablePredictiveModelBuilder) {
-            for(PredictiveModel pm : predictiveModel.getSplitModels().values()) {
+            for (PredictiveModel pm : predictiveModel.getSplitModels().values()) {
                 ((UpdatablePredictiveModelBuilder) wrappedBuilder).stripData(pm);
             }
             ((UpdatablePredictiveModelBuilder) wrappedBuilder).stripData(predictiveModel.getDefaultPM());

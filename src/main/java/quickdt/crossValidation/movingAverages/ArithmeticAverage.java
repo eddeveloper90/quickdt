@@ -1,7 +1,5 @@
 package quickdt.crossValidation.movingAverages;
 
-import quickdt.crossValidation.movingAverages.MovingAverage;
-
 import java.util.List;
 
 /**
@@ -9,9 +7,10 @@ import java.util.List;
  */
 public class ArithmeticAverage implements MovingAverage {
     double average = 0;
+
     @Override
     public double getAverage(List<Double> values) {
-        for(Double val : values)
+        for (Double val : values)
             average += val;
         average /= values.size();
         return average;

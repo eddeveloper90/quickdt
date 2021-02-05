@@ -11,7 +11,9 @@ import java.util.List;
 public abstract class OnlineCrossValLoss<S extends CrossValLoss> implements Comparable<S>, CrossValLoss {
     double totalLoss = 0;
     double weightOfAllInstances = 0;
+
     protected abstract double getLossFromInstance(double probabilityOfCorrectInstance, double weight);
+
     public double getLoss(List<? extends AbstractInstance> crossValSet, PredictiveModel predictiveModel) {
         totalLoss = 0;
         weightOfAllInstances = 0;

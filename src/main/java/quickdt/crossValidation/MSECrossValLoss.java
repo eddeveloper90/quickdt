@@ -1,7 +1,6 @@
 package quickdt.crossValidation;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Supplier;
 
 /**
  * Created by ian on 2/28/14.
@@ -14,7 +13,7 @@ public class MSECrossValLoss extends OnlineCrossValLoss<MSECrossValLoss> {
         Preconditions.checkArgument(!Double.isInfinite(probabilityOfCorrectInstance), "Probability must be a natural number, not infinite");
 
         final double error = (1.0 - probabilityOfCorrectInstance);
-        final double errorSquared = error*error*weight;
+        final double errorSquared = error * error * weight;
         return errorSquared;
     }
 
@@ -25,6 +24,6 @@ public class MSECrossValLoss extends OnlineCrossValLoss<MSECrossValLoss> {
 
     @Override
     public String toString() {
-        return "MSE: "+ super.totalLoss;
+        return "MSE: " + super.totalLoss;
     }
 }

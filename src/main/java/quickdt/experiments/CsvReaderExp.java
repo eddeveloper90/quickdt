@@ -26,7 +26,7 @@ import java.util.Map;
  * Created by alexanderhawk on 1/16/14.
  */
 public class CsvReaderExp {
-    private static final Logger logger =  LoggerFactory.getLogger(CsvReaderExp.class);
+    private static final Logger logger = LoggerFactory.getLogger(CsvReaderExp.class);
 
 
     public static void main(String[] args) {
@@ -69,7 +69,7 @@ public class CsvReaderExp {
         return uniqueBrowsers;
     }
 
-    private static HashMap<String, ClicksAndImps> uniqueBrowserDataPredicted(PredictiveModel predictiveModel,  List<Instance> instances) {
+    private static HashMap<String, ClicksAndImps> uniqueBrowserDataPredicted(PredictiveModel predictiveModel, List<Instance> instances) {
         HashMap<String, ClicksAndImps> uniqueBrowsers = new HashMap<>();
         for (Instance instance : instances) {
             String browser = (String) instance.getAttributes().get("an_browser");
@@ -92,7 +92,7 @@ public class CsvReaderExp {
 
     }
 
-    public static List<Instance> convertRawMapToInstance(List<Map<String,Serializable>> rawMaps) {
+    public static List<Instance> convertRawMapToInstance(List<Map<String, Serializable>> rawMaps) {
         List<Instance> instances = Lists.newArrayList();
         Attributes attributes;
         Instance instance;

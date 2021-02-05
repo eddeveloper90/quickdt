@@ -2,7 +2,6 @@ package quickdt.predictiveModels.temporallyWeightPredictiveModel;
 
 import quickdt.data.Attributes;
 import quickdt.predictiveModels.PredictiveModel;
-import quickdt.predictiveModels.splitOnAttributePredictiveModel.SplitOnAttributePMBuilder;
 
 import java.io.PrintStream;
 import java.io.Serializable;
@@ -11,7 +10,7 @@ import java.util.Map;
 /**
  * Created by alexanderhawk on 6/20/14.
  */
-public class TemporallyReweightedPM implements PredictiveModel{
+public class TemporallyReweightedPM implements PredictiveModel {
     private static final long serialVersionUID = 2642074639257374588L;
     private final PredictiveModel wrappedModel;
 

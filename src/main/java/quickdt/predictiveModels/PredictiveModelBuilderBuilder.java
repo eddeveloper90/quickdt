@@ -9,6 +9,7 @@ import java.util.Map;
  */
 public interface PredictiveModelBuilderBuilder<PM extends PredictiveModel, PMB extends PredictiveModelBuilder<PM>> {
     public Map<String, FieldValueRecommender> createDefaultParametersToOptimize();
+
     public PMB buildBuilder(Map<String, Object> predictiveModelConfig);
 
 }

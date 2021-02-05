@@ -1,7 +1,9 @@
 package quickdt.experiments;
 
 import com.google.common.collect.Lists;
-import quickdt.data.*;
+import quickdt.data.Attributes;
+import quickdt.data.HashMapAttributes;
+import quickdt.data.Instance;
 import quickdt.predictiveModels.decisionTree.TreeBuilder;
 import quickdt.predictiveModels.randomForest.RandomForest;
 import quickdt.predictiveModels.randomForest.RandomForestBuilder;
@@ -34,7 +36,7 @@ public class ProbDistOfVarDependentOnCatVars {
     private double probabilityRangesOfAttributeValue[][];
     private double impactOfAttributeValue[][];
 
-    public ProbDistOfVarDependentOnCatVars(int instances, int maxDepth, int numTrees, int numNoiseAttributes, int numPredictiveAttributes, int numAttributeVals, double maxProbabilityOfPositiveClassification, double distanceAboveTheMeanForRelevance)  {
+    public ProbDistOfVarDependentOnCatVars(int instances, int maxDepth, int numTrees, int numNoiseAttributes, int numPredictiveAttributes, int numAttributeVals, double maxProbabilityOfPositiveClassification, double distanceAboveTheMeanForRelevance) {
 
         initializeRandomForestProperties(instances, numTrees, maxDepth);
         initializeAttributeProperties(numPredictiveAttributes, numNoiseAttributes, numAttributeVals);
@@ -44,39 +46,38 @@ public class ProbDistOfVarDependentOnCatVars {
         this.randomForest = getRandomForest(trainingData);
     }
 
-    public void getAverageDeviationInPredictedProbabilities(int samples, double onlyConsiderSamplesAboveThisProbability, boolean print)  {
+    public void getAverageDeviationInPredictedProbabilities(int samples, double onlyConsiderSamplesAboveThisProbability, boolean print) {
         double attributeValue;
         Attributes attributes;
         double predictedProb;
         double actualProb;
         double deviation = 0;
         System.out.println("getting deviations\n");
-        for (int sample = 0; sample < samples; sample++)  {
+        for (int sample = 0; sample < samples; sample++) {
             attributes = new HashMapAttributes();
             classificationVar = 0;
-            for (int attributeNumber = 0; attributeNumber < numAttributes; attributeNumber++)  {
+            for (int attributeNumber = 0; attributeNumber < numAttributes; attributeNumber++) {
                 attributeValue = useAttribute(attributeNumber);
                 attributes.put(Integer.toString(attributeNumber), attributeValue);
             }
             actualProb = getInstanceProbability();
-            if (actualProb > onlyConsiderSamplesAboveThisProbability)  {
+            if (actualProb > onlyConsiderSamplesAboveThisProbability) {
                 predictedProb = randomForest.getProbability(attributes, 1);
                 deviation += Math.abs(actualProb - predictedProb) / actualProb;
                 System.out.println("actualProb : predictedProb " + actualProb + " : " + predictedProb);
-            }
-            else
+            } else
                 sample--;
         }
 //        Writer writer = new PrintWriter(System.out);
         PrintStream treeView = new PrintStream(System.out); //new WriterOutputStream(writer));
         randomForest.dump(treeView);
 
-        System.out.println("average deviation" + deviation/samples);
+        System.out.println("average deviation" + deviation / samples);
         return;
     }
 
-    private double getInstanceProbability()  {
-        double instanceProbability = maxProbabilityOfPositiveClassification * (1 - Math.exp(-stiffness*classificationVar) );
+    private double getInstanceProbability() {
+        double instanceProbability = maxProbabilityOfPositiveClassification * (1 - Math.exp(-stiffness * classificationVar));
         return instanceProbability;
     }
 //        System.out.println("Probability of a click: " + randomForest.getProbability(HashMapAttributes.create("age", 11), "click"));
@@ -95,25 +96,25 @@ public class ProbDistOfVarDependentOnCatVars {
         probabilityRangesOfAttributeValue = new double[numAttributes][numAttributeVals];
         double normalizationConst = 0;
         Random probabilityValueGenerator = new Random();
-        for (int i=0; i<numAttributes; i++)  {
+        for (int i = 0; i < numAttributes; i++) {
             normalizationConst = 0;
-            for (int j=0; j<numAttributeVals; j++)  {
+            for (int j = 0; j < numAttributeVals; j++) {
                 probabilityRangesOfAttributeValue[i][j] = probabilityValueGenerator.nextDouble();
-                normalizationConst +=  probabilityRangesOfAttributeValue[i][j];
+                normalizationConst += probabilityRangesOfAttributeValue[i][j];
             }
-            for (int j=0; j<numAttributeVals; j++)  {
+            for (int j = 0; j < numAttributeVals; j++) {
                 probabilityRangesOfAttributeValue[i][j] /= normalizationConst;
-                if ( j>0 )
-                    probabilityRangesOfAttributeValue[i][j] += probabilityRangesOfAttributeValue[i][j-1];
-        }
+                if (j > 0)
+                    probabilityRangesOfAttributeValue[i][j] += probabilityRangesOfAttributeValue[i][j - 1];
+            }
         }
     }
 
     private void initializeImpactOfVariableValue() {
         impactOfAttributeValue = new double[numAttributes][numAttributeVals];
         Random probabilityValueGenerator = new Random();
-        for (int i=0; i<numPredictiveAttributes; i++)
-            for (int j=0; j<numAttributeVals; j++)
+        for (int i = 0; i < numPredictiveAttributes; i++)
+            for (int j = 0; j < numAttributeVals; j++)
                 impactOfAttributeValue[i][j] = probabilityValueGenerator.nextDouble();//consider making a gaussian
     }
 
@@ -127,10 +128,10 @@ public class ProbDistOfVarDependentOnCatVars {
     private void initializeClassificationVariableProperties(double maxProbabilityOfPositiveClassification, double distanceAboveTheMeanForRelevance) {
         this.classificationSampler = new Random();
         double meanOfPredictiveVariable = 0;
-        for (int i=0; i<numPredictiveAttributes; i++)
-            for (int j=0; j<numAttributeVals; j++)
-                meanOfPredictiveVariable+= probabilityRangesOfAttributeValue[i][j]*impactOfAttributeValue[i][j];
-        this.stiffness = 1/(distanceAboveTheMeanForRelevance*meanOfPredictiveVariable);
+        for (int i = 0; i < numPredictiveAttributes; i++)
+            for (int j = 0; j < numAttributeVals; j++)
+                meanOfPredictiveVariable += probabilityRangesOfAttributeValue[i][j] * impactOfAttributeValue[i][j];
+        this.stiffness = 1 / (distanceAboveTheMeanForRelevance * meanOfPredictiveVariable);
         this.maxProbabilityOfPositiveClassification = maxProbabilityOfPositiveClassification;
     }
 
@@ -140,23 +141,23 @@ public class ProbDistOfVarDependentOnCatVars {
         return randomForestBuilder.buildPredictiveModel(trainingData);
     }
 
-    private  List<Instance> createTrainingData() {
+    private List<Instance> createTrainingData() {
         List<Instance> trainingData = Lists.newArrayList();
         double attributeValue;
         Instance instance;
         Attributes attributes;
 
-        for (int i = 0; i < instances; i++)  {
+        for (int i = 0; i < instances; i++) {
             attributes = new HashMapAttributes();
             classificationVar = 0;
-            for (int attributeNumber = 0; attributeNumber < numAttributes; attributeNumber++)  {
+            for (int attributeNumber = 0; attributeNumber < numAttributes; attributeNumber++) {
                 attributeValue = useAttribute(attributeNumber);
                 attributes.put(Integer.toString(attributeNumber), attributeValue);
             }
 
             classify();
 
-            instance = new Instance(attributes, this.classification );
+            instance = new Instance(attributes, this.classification);
             trainingData.add(instance);
         }
         return trainingData;
@@ -175,10 +176,10 @@ public class ProbDistOfVarDependentOnCatVars {
     }
 
     private double sampleAttributeValueFromProbabilityDistribution(int attributeNumber) {
-        double attributeVal =0;
+        double attributeVal = 0;
         double random = attributeValueGenerator.nextDouble();
-        for (int i=0; i<numAttributeVals; i++)
-            if (random < probabilityRangesOfAttributeValue[attributeNumber][i])  {
+        for (int i = 0; i < numAttributeVals; i++)
+            if (random < probabilityRangesOfAttributeValue[attributeNumber][i]) {
                 attributeVal = impactOfAttributeValue[attributeNumber][i];
                 break;
             }

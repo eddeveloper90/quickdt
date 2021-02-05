@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by alexanderhawk on 4/29/14.
  */
-public class HoltWintersMovingAverage implements MovingAverage  {
+public class HoltWintersMovingAverage implements MovingAverage {
     double average = 0;
     private double alpha;
     private double beta;
@@ -27,7 +27,7 @@ public class HoltWintersMovingAverage implements MovingAverage  {
 
         double s = values.get(1);
         double b = values.get(1) - values.get(0);
-        for(int i = 2; i < values.size(); i++) {
+        for (int i = 2; i < values.size(); i++) {
             double s_prev = s;
             s = alpha * values.get(i) + (1 - alpha) * (s - b);
             b = beta * (s - s_prev) + (1 - beta) * b;

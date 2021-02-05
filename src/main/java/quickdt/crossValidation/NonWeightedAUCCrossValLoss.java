@@ -1,13 +1,15 @@
 package quickdt.crossValidation;
+
 import org.apache.mahout.classifier.evaluation.Auc;
 import quickdt.data.AbstractInstance;
 import quickdt.predictiveModels.PredictiveModel;
+
 import java.util.List;
 
 /**
  * Created by alexanderhawk on 5/17/14.
  */
-public class NonWeightedAUCCrossValLoss  implements CrossValLoss {
+public class NonWeightedAUCCrossValLoss implements CrossValLoss {
 
     @Override
     public double getLoss(List<? extends AbstractInstance> crossValSet, PredictiveModel predictiveModel) {

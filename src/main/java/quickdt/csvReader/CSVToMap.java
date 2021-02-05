@@ -1,4 +1,5 @@
 package quickdt.csvReader;
+
 import com.google.common.collect.Sets;
 import org.jooq.tools.csv.CSVReader;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public class CSVToMap {
             System.exit(1);
         }
 
-        for(String[] row : rowData) {
+        for (String[] row : rowData) {
             Map<String, Serializable> rowMap = convertRowToMap(row);
             if (rowMap != null) {
                 rawData.add(rowMap);
@@ -64,10 +65,9 @@ public class CSVToMap {
     private static InputStreamReader createReader(final String inputFile) {
         InputStreamReader inputStreamReader;
         try {
-            inputStreamReader =  new InputStreamReader(new FileInputStream(inputFile));
+            inputStreamReader = new InputStreamReader(new FileInputStream(inputFile));
             return inputStreamReader;
-        }
-        catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.exit(1);
         }

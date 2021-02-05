@@ -17,41 +17,41 @@ public abstract class Node implements Serializable {
     }
 
 
-	/**
-	 * Writes a textual representation of this tree to a PrintStream
-	 * 
-	 * @param ps
-	 */
-	public void dump(final PrintStream ps) {
-		dump(0, ps);
-	}
+    /**
+     * Writes a textual representation of this tree to a PrintStream
+     *
+     * @param ps
+     */
+    public void dump(final PrintStream ps) {
+        dump(0, ps);
+    }
 
-	/**
-	 * Get a label for a given set of HashMapAttributes
-	 * 
-	 * @param attributes
-	 * @return
-	 */
-	public abstract Leaf getLeaf(Attributes attributes);
+    /**
+     * Get a label for a given set of HashMapAttributes
+     *
+     * @param attributes
+     * @return
+     */
+    public abstract Leaf getLeaf(Attributes attributes);
 
-	/**
-	 * Return the mean depth of leaves in the tree. A lower number generally
-	 * indicates that the decision tree learner has done a better job.
-	 * 
-	 * @return
-	 */
-	public double meanDepth() {
-		final LeafDepthStats stats = new LeafDepthStats();
-		calcMeanDepth(stats);
-		return (double) stats.ttlDepth / stats.ttlSamples;
-	}
+    /**
+     * Return the mean depth of leaves in the tree. A lower number generally
+     * indicates that the decision tree learner has done a better job.
+     *
+     * @return
+     */
+    public double meanDepth() {
+        final LeafDepthStats stats = new LeafDepthStats();
+        calcMeanDepth(stats);
+        return (double) stats.ttlDepth / stats.ttlSamples;
+    }
 
-	/**
-	 * Return the number of nodes in this decision tree.
-	 * 
-	 * @return
-	 */
-	public abstract int size();
+    /**
+     * Return the number of nodes in this decision tree.
+     *
+     * @return
+     */
+    public abstract int size();
 
     @Override
     public abstract boolean equals(final Object obj);
@@ -61,8 +61,8 @@ public abstract class Node implements Serializable {
 
     protected abstract void calcMeanDepth(LeafDepthStats stats);
 
-	protected static class LeafDepthStats {
-		int ttlDepth = 0;
-		int ttlSamples = 0;
-	}
+    protected static class LeafDepthStats {
+        int ttlDepth = 0;
+        int ttlSamples = 0;
+    }
 }

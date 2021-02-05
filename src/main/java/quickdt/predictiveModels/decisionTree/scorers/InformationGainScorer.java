@@ -31,8 +31,8 @@ public class InformationGainScorer implements Scorer {
     }
 
     private double calculateGain(double rootEntropy, double aEntropy, double bEntropy, double aSize, double bSize) {
-        double aAdjustedEntropy = (aSize / (aSize+bSize)) * aEntropy;
-        double bAdjustedEntropy = (bSize / (aSize+bSize)) * bEntropy;
+        double aAdjustedEntropy = (aSize / (aSize + bSize)) * aEntropy;
+        double bAdjustedEntropy = (bSize / (aSize + bSize)) * bEntropy;
         return rootEntropy - aAdjustedEntropy - bAdjustedEntropy;
     }
 

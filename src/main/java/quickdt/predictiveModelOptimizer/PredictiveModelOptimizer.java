@@ -8,7 +8,9 @@ import quickdt.Misc;
 import quickdt.crossValidation.CrossValidator;
 import quickdt.crossValidation.StationaryCrossValidator;
 import quickdt.data.AbstractInstance;
-import quickdt.predictiveModels.*;
+import quickdt.predictiveModels.PredictiveModel;
+import quickdt.predictiveModels.PredictiveModelBuilder;
+import quickdt.predictiveModels.PredictiveModelBuilderBuilder;
 
 import java.util.Collections;
 import java.util.Map;
@@ -26,6 +28,7 @@ public class PredictiveModelOptimizer<PM extends PredictiveModel, PMB extends Pr
     private volatile boolean hasRun = false;
     private static final int MAX_ITERATIONS = 10;
     private int maxIterations;
+
     public PredictiveModelOptimizer(PredictiveModelBuilderBuilder<PM, PMB> predictiveModelBuilderBuilder, final Iterable<? extends AbstractInstance> trainingData) {
         this(predictiveModelBuilderBuilder, trainingData, new StationaryCrossValidator());
     }
@@ -55,7 +58,7 @@ public class PredictiveModelOptimizer<PM extends PredictiveModel, PMB extends Pr
 
         Map<String, Object> startingConfiguration = Maps.newHashMap();
         for (Map.Entry<String, FieldValueRecommender> stringFieldValueRecommenderEntry : valueRecommenders.entrySet()) {
-                final Optional<Object> firstValueOptional = stringFieldValueRecommenderEntry.getValue().recommendNextValue(Collections.<Object, Double>emptyMap());
+            final Optional<Object> firstValueOptional = stringFieldValueRecommenderEntry.getValue().recommendNextValue(Collections.<Object, Double>emptyMap());
             if (!firstValueOptional.isPresent()) {
                 throw new RuntimeException("Failed to retrieve initial value for field " + stringFieldValueRecommenderEntry.getKey());
             }
@@ -67,18 +70,18 @@ public class PredictiveModelOptimizer<PM extends PredictiveModel, PMB extends Pr
     public Map<String, Object> determineOptimalConfiguration(Map<String, Object> startingConfiguration) {
         Map<String, Object> bestConfigurationSoFar = startingConfiguration;
         int iterations = 0;
-        while( iterations < maxIterations ) {
+        while (iterations < maxIterations) {
             final ObjectWithLoss<Map<String, Object>> newBestConfigurationWithLoss = iterateAndImproveConfiguration(bestConfigurationSoFar);
             if (newBestConfigurationWithLoss.get().equals(bestConfigurationSoFar)) {
                 logger.info("Best configuration unchanged after iteration, we're done here.  Configuration: " + newBestConfigurationWithLoss.get() + " with loss: " + newBestConfigurationWithLoss.getLoss());
                 break;
             } else {
                 bestConfigurationSoFar = newBestConfigurationWithLoss.get();
-                logger.info("Found new best configuration after iteration: "+bestConfigurationSoFar+" with loss "+newBestConfigurationWithLoss.getLoss());
+                logger.info("Found new best configuration after iteration: " + bestConfigurationSoFar + " with loss " + newBestConfigurationWithLoss.getLoss());
             }
             iterations++;
         }
-        if ( iterations==maxIterations )
+        if (iterations == maxIterations)
             logger.debug("optimizer did not converge");
         return bestConfigurationSoFar;
     }

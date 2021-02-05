@@ -4,7 +4,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import quickdt.data.AbstractInstance;
 import quickdt.predictiveModels.PredictiveModelBuilder;
-import quickdt.predictiveModels.featureEngineering.*;
+import quickdt.predictiveModels.featureEngineering.AttributesEnrichStrategy;
+import quickdt.predictiveModels.featureEngineering.AttributesEnricher;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -26,12 +27,11 @@ public class ProbabilityEnrichStrategy implements AttributesEnrichStrategy {
     private final int maxValueCount;
 
     /**
-     *
      * @param attributeKeysToInject The attributes to enrich with probabilities
-     * @param classification The classification whose probability we should use.  If there are only two
-     *                       classifications then it doesn't particularly matter which one we use.  If there
-     *                       are more than two you might wish to create multiple enrich strategies, each
-     *                       looking at a different classification.
+     * @param classification        The classification whose probability we should use.  If there are only two
+     *                              classifications then it doesn't particularly matter which one we use.  If there
+     *                              are more than two you might wish to create multiple enrich strategies, each
+     *                              looking at a different classification.
      */
     public ProbabilityEnrichStrategy(PredictiveModelBuilder<?> wrappedBuilder, Set<String> attributeKeysToInject, Serializable classification) {
         this(attributeKeysToInject, classification, DEFAULT_MAX_VALUE_COUNT);
@@ -39,12 +39,12 @@ public class ProbabilityEnrichStrategy implements AttributesEnrichStrategy {
 
     /**
      * @param attributeKeysToInject The attributes to enrich with probabilities
-     * @param classification The classification whose probability we should use.  If there are only two
-     *                       classifications then it doesn't particularly matter which one we use.  If there
-     *                       are more than two you might wish to create multiple enrich strategies, each
-     *                       looking at a different classification.
-     * @param maxValueCount This is the maximum number of values an attribute can have before it will be
-     *                      ignored by ProbabilityEnrichStrategy.  If unspecified the default is 20,000.
+     * @param classification        The classification whose probability we should use.  If there are only two
+     *                              classifications then it doesn't particularly matter which one we use.  If there
+     *                              are more than two you might wish to create multiple enrich strategies, each
+     *                              looking at a different classification.
+     * @param maxValueCount         This is the maximum number of values an attribute can have before it will be
+     *                              ignored by ProbabilityEnrichStrategy.  If unspecified the default is 20,000.
      */
     public ProbabilityEnrichStrategy(Set<String> attributeKeysToInject, Serializable classification, final int maxValueCount) {
         this.attributeKeysToInject = attributeKeysToInject;

@@ -1,14 +1,20 @@
 package quickdt.inspection;
 
 import com.google.common.base.Function;
-import com.google.common.collect.*;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.twitter.common.stats.ReservoirSampler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import quickdt.Misc;
 import quickdt.crossValidation.CrossValidator;
 import quickdt.crossValidation.StationaryCrossValidator;
-import quickdt.data.*;
+import quickdt.data.AbstractInstance;
+import quickdt.data.Attributes;
+import quickdt.data.HashMapAttributes;
+import quickdt.data.Instance;
 import quickdt.predictiveModels.PredictiveModel;
 import quickdt.predictiveModels.PredictiveModelBuilder;
 import quickdt.predictiveModels.decisionTree.TreeBuilder;
@@ -17,7 +23,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class AttributeImportanceFinder {
-    private static final  Logger logger =  LoggerFactory.getLogger(AttributeImportanceFinder.class);
+    private static final Logger logger = LoggerFactory.getLogger(AttributeImportanceFinder.class);
 
     public AttributeImportanceFinder() {
 
@@ -53,7 +59,7 @@ public class AttributeImportanceFinder {
 
         Map<String, ReservoirSampler<Serializable>> samplesPerAttribute = Maps.newHashMap();
         for (AbstractInstance instance : trainingData) {
-            for (Map.Entry<String,Serializable> attributeKeyValue : instance.getAttributes().entrySet()) {
+            for (Map.Entry<String, Serializable> attributeKeyValue : instance.getAttributes().entrySet()) {
                 ReservoirSampler<Serializable> sampler = samplesPerAttribute.get(attributeKeyValue.getKey());
                 if (sampler == null) {
                     sampler = new ReservoirSampler<Serializable>(1000);
@@ -69,7 +75,7 @@ public class AttributeImportanceFinder {
             if (samplesForAttribute.size() < 2) continue;
             Iterable<AbstractInstance> scrambledTestingSet = Lists.newLinkedList(Iterables.transform(testingSet, new AttributeScrambler(attributeToExclude, samplesForAttribute)));
             double score = crossValidator.getCrossValidatedLoss(predictiveModelBuilder, scrambledTestingSet);
-            logger.info("Attribute \""+attributeToExclude+"\" score is "+score);
+            logger.info("Attribute \"" + attributeToExclude + "\" score is " + score);
             scores.add(new AttributeScore(attributeToExclude, score));
         }
 
@@ -96,4 +102,4 @@ public class AttributeImportanceFinder {
         }
     }
 
- }
+}

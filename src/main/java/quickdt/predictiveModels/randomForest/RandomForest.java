@@ -37,12 +37,12 @@ public class RandomForest implements PredictiveModel {
         for (int i = 0; i < numTrees; i++) {
             meanDepth += trees.get(i).node.meanDepth();
         }
-        printStream.print("meanDepth " + meanDepth/numTrees + "\n");
+        printStream.print("meanDepth " + meanDepth / numTrees + "\n");
         for (Tree tree : trees) {
             printStream.print("depth " + tree.node.meanDepth() + "\n");
         }
         for (int i = 0; i < numTrees; i++)
-           trees.get(i).dump(printStream);
+            trees.get(i).dump(printStream);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class RandomForest implements PredictiveModel {
         for (Tree tree : trees) {
             final double probability = tree.getProbability(attributes, classification);
             if (Double.isInfinite(probability) || Double.isNaN(probability)) {
-                throw new RuntimeException("Probability must be a normal number, not "+probability);
+                throw new RuntimeException("Probability must be a normal number, not " + probability);
             }
             total += probability;
         }
@@ -88,7 +88,7 @@ public class RandomForest implements PredictiveModel {
     public Serializable getClassificationByMaxProb(Attributes attributes) {
         Map<Serializable, AtomicDouble> probTotals = Maps.newHashMap();
         for (Tree tree : trees) {
-            Leaf leaf =tree.node.getLeaf(attributes);
+            Leaf leaf = tree.node.getLeaf(attributes);
             for (Serializable classification : leaf.getClassifications()) {
                 AtomicDouble ttlProb = probTotals.get(classification);
                 if (ttlProb == null) {

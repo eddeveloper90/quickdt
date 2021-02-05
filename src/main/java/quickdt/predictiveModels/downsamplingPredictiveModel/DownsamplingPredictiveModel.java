@@ -39,6 +39,7 @@ public class DownsamplingPredictiveModel implements PredictiveModel {
 
     /**
      * Unsupported at this time, will throw UnsupportedOperationException
+     *
      * @param attributes
      * @return
      */
@@ -49,7 +50,7 @@ public class DownsamplingPredictiveModel implements PredictiveModel {
 
     @Override
     public void dump(final PrintStream printStream) {
-        printStream.println("Will correct for downsampling with drop probability "+dropProbability+" for minority classification "+minorityClassification);
+        printStream.println("Will correct for downsampling with drop probability " + dropProbability + " for minority classification " + minorityClassification);
         wrappedPredictiveModel.dump(printStream);
     }
 

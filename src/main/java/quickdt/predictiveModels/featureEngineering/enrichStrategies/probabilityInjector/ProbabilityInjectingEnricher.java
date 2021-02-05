@@ -38,7 +38,7 @@ public class ProbabilityInjectingEnricher implements AttributesEnricher {
             if (valueProb == null) {
                 valueProb = MISSING_PROBABILITY_PLACEHOLDER;
             }
-            enrichedAttributes.put(attributeValueProbEntry.getKey()+ KEY_APPEND_STRING, valueProb);
+            enrichedAttributes.put(attributeValueProbEntry.getKey() + KEY_APPEND_STRING, valueProb);
 
         }
         return enrichedAttributes;

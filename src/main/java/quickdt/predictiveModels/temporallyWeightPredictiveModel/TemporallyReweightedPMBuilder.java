@@ -13,13 +13,14 @@ import quickdt.predictiveModels.PredictiveModelBuilder;
 import quickdt.predictiveModels.UpdatablePredictiveModelBuilder;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ian on 5/29/14.
  */
 public class TemporallyReweightedPMBuilder implements UpdatablePredictiveModelBuilder<TemporallyReweightedPM> {
-    private static final  Logger logger =  LoggerFactory.getLogger(TemporallyReweightedPMBuilder.class);
+    private static final Logger logger = LoggerFactory.getLogger(TemporallyReweightedPMBuilder.class);
     private static final double POSITIVE_CLASSIFICATION = 1.0;
     private static final double DEFAULT_DECAY_CONSTANT = 173; //approximately 5 days
     private double decayConstantOfPositive = DEFAULT_DECAY_CONSTANT;
@@ -92,7 +93,7 @@ public class TemporallyReweightedPMBuilder implements UpdatablePredictiveModelBu
 
     private DateTime getMostRecentInstance(Iterable<? extends AbstractInstance> newData) {
         DateTime mostRecent = null;
-        for(AbstractInstance instance : newData) {
+        for (AbstractInstance instance : newData) {
             DateTime instanceTime = dateTimeExtractor.extractDateTime(instance);
             if (mostRecent == null || instanceTime.isAfter(mostRecent)) {
                 mostRecent = instanceTime;
@@ -104,7 +105,7 @@ public class TemporallyReweightedPMBuilder implements UpdatablePredictiveModelBu
     @Override
     public void stripData(TemporallyReweightedPM predictiveModel) {
         if (wrappedBuilder instanceof UpdatablePredictiveModelBuilder) {
-                ((UpdatablePredictiveModelBuilder) wrappedBuilder).stripData(predictiveModel.getWrappedModel());
+            ((UpdatablePredictiveModelBuilder) wrappedBuilder).stripData(predictiveModel.getWrappedModel());
         } else {
             throw new RuntimeException("Cannot strip data without UpdatablePredictiveModelBuilder");
         }

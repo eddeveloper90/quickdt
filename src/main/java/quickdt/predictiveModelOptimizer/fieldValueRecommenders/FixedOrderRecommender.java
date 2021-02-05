@@ -12,7 +12,7 @@ import java.util.Map;
 public class FixedOrderRecommender implements FieldValueRecommender {
     private final Iterable<Object> values;
 
-    public FixedOrderRecommender(Object ... values) {
+    public FixedOrderRecommender(Object... values) {
         this(Lists.newArrayList(values));
     }
 

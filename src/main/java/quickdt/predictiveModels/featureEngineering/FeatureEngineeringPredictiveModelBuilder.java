@@ -16,7 +16,7 @@ import java.util.List;
  * A PredictiveModelBuilder that attempts to
  */
 public class FeatureEngineeringPredictiveModelBuilder implements PredictiveModelBuilder<FeatureEngineeredPredictiveModel> {
-    private static final  Logger logger =  LoggerFactory.getLogger(FeatureEngineeringPredictiveModelBuilder.class);
+    private static final Logger logger = LoggerFactory.getLogger(FeatureEngineeringPredictiveModelBuilder.class);
 
     private final PredictiveModelBuilder<?> wrappedBuilder;
     private final List<? extends AttributesEnrichStrategy> enrichStrategies;

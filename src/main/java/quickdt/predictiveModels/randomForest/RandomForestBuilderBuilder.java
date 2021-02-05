@@ -3,7 +3,6 @@ package quickdt.predictiveModels.randomForest;
 import com.google.common.collect.Maps;
 import quickdt.predictiveModelOptimizer.FieldValueRecommender;
 import quickdt.predictiveModelOptimizer.fieldValueRecommenders.FixedOrderRecommender;
-import quickdt.predictiveModels.PredictiveModelBuilderBuilder;
 import quickdt.predictiveModels.UpdatablePredictiveModelBuilderBuilder;
 import quickdt.predictiveModels.decisionTree.TreeBuilder;
 import quickdt.predictiveModels.decisionTree.TreeBuilderBuilder;
@@ -17,6 +16,7 @@ public class RandomForestBuilderBuilder implements UpdatablePredictiveModelBuild
     private static final String NUM_TREES = "numTrees";
     private static final String BAG_SIZE = "bagSize";
     private final TreeBuilderBuilder treeBuilderBuilder;
+
     public RandomForestBuilderBuilder() {
         this(new TreeBuilderBuilder());
     }

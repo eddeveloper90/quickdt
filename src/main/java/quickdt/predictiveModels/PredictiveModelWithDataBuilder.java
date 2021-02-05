@@ -72,7 +72,7 @@ public class PredictiveModelWithDataBuilder<PM extends PredictiveModel> implemen
     private void appendTrainingData(Iterable<? extends AbstractInstance> newTrainingData) {
         int index = trainingData.size();
         List<AbstractInstance> dataList = new ArrayList<>();
-        for(AbstractInstance data : newTrainingData) {
+        for (AbstractInstance data : newTrainingData) {
             data.index = index;
             index++;
             dataList.add(data);

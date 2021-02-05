@@ -23,9 +23,9 @@ public class DownsamplingPredictiveModelBuilderBuilder implements UpdatablePredi
     @Override
     public Map<String, FieldValueRecommender> createDefaultParametersToOptimize() {
         Map<String, FieldValueRecommender> parametersToOptimize = Maps.newHashMap();
-               parametersToOptimize.putAll(wrappedBuilderBuilder.createDefaultParametersToOptimize());
-               parametersToOptimize.put(MINORITY_INSTANCE_PROPORTION, new FixedOrderRecommender(0.1, 0.2, 0.3, 0.4, 0.5));
-               return parametersToOptimize;
+        parametersToOptimize.putAll(wrappedBuilderBuilder.createDefaultParametersToOptimize());
+        parametersToOptimize.put(MINORITY_INSTANCE_PROPORTION, new FixedOrderRecommender(0.1, 0.2, 0.3, 0.4, 0.5));
+        return parametersToOptimize;
     }
 
     @Override

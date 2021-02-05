@@ -21,7 +21,7 @@ public class CalibratedPredictiveModel implements PredictiveModel {
     public Calibrator calibrator;
     public PredictiveModel predictiveModel;
 
-    public CalibratedPredictiveModel (PredictiveModel predictiveModel, Calibrator calibrator) {
+    public CalibratedPredictiveModel(PredictiveModel predictiveModel, Calibrator calibrator) {
         Preconditions.checkArgument(!(predictiveModel instanceof CalibratedPredictiveModel));
         this.predictiveModel = predictiveModel;
         this.calibrator = calibrator;
@@ -35,6 +35,7 @@ public class CalibratedPredictiveModel implements PredictiveModel {
 
     /**
      * Unsupported at this time, will throw UnsupportedOperationException
+     *
      * @param attributes
      * @return
      */

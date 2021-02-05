@@ -21,6 +21,7 @@ public class RMSECrossValLoss extends OnlineCrossValLoss<RMSECrossValLoss> {
     public int compareTo(final RMSECrossValLoss o) {
         return mseCrossValLoss.compareTo(o.mseCrossValLoss);
     }
+
     @Override
     public double getLoss(List<? extends AbstractInstance> crossValSet, PredictiveModel predictiveModel) {
         return Math.sqrt(super.getLoss(crossValSet, predictiveModel));
@@ -28,6 +29,6 @@ public class RMSECrossValLoss extends OnlineCrossValLoss<RMSECrossValLoss> {
 
     @Override
     public String toString() {
-        return "RMSE: "+ super.totalLoss;
+        return "RMSE: " + super.totalLoss;
     }
 }

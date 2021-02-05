@@ -1,7 +1,9 @@
 package quickdt.experiments;
 
 import com.google.common.collect.Lists;
-import quickdt.data.*;
+import quickdt.data.Attributes;
+import quickdt.data.HashMapAttributes;
+import quickdt.data.Instance;
 import quickdt.predictiveModels.decisionTree.TreeBuilder;
 import quickdt.predictiveModels.randomForest.RandomForest;
 import quickdt.predictiveModels.randomForest.RandomForestBuilder;
@@ -30,7 +32,7 @@ public class ProbDistOfSumOfIndepRandVars {
     private double stiffness;
     private double maxProbabilityOfPositiveClassification;
 
-    public ProbDistOfSumOfIndepRandVars(int instances, int maxDepth, int numTrees, int numNoiseAttributes, int numPredictiveAttributes, double maxProbabilityOfPositiveClassification, int stdsAboveTheMeanForRelevance)  {
+    public ProbDistOfSumOfIndepRandVars(int instances, int maxDepth, int numTrees, int numNoiseAttributes, int numPredictiveAttributes, double maxProbabilityOfPositiveClassification, int stdsAboveTheMeanForRelevance) {
 
         initializeRandomForestProperties(instances, numTrees, maxDepth);
         initializeAttributeProperties(numPredictiveAttributes, numNoiseAttributes);
@@ -40,40 +42,39 @@ public class ProbDistOfSumOfIndepRandVars {
         this.randomForest = getRandomForest(trainingData);
     }
 
-    public void getAverageDeviationInPredictedProbabilities(int samples, double onlyConsiderSamplesAboveThisProbability, boolean print)  {
+    public void getAverageDeviationInPredictedProbabilities(int samples, double onlyConsiderSamplesAboveThisProbability, boolean print) {
         double attributeValue;
         Attributes attributes;
         double predictedProb;
         double actualProb;
         double deviation = 0;
 
-        for (int i = 0; i < samples; i++)  {
+        for (int i = 0; i < samples; i++) {
             attributes = new HashMapAttributes();
             classificationVar = 0;
-            for (int j = 0; j < numAttributes; j++)  {
+            for (int j = 0; j < numAttributes; j++) {
                 attributeValue = useAttribute(j);
                 attributes.put(Integer.toString(j), attributeValue);
             }
             normalizeClassificationVar();
             actualProb = getInstanceProbability();
-            if (actualProb > onlyConsiderSamplesAboveThisProbability)  {
+            if (actualProb > onlyConsiderSamplesAboveThisProbability) {
                 predictedProb = randomForest.getProbability(attributes, 1);
                 deviation += Math.abs(actualProb - predictedProb) / actualProb;
                 System.out.println("actualProb : predictedProb " + actualProb + " : " + predictedProb);
-            }
-            else
+            } else
                 i--;
-            }
+        }
 //        Writer writer = new PrintWriter(System.out);
         PrintStream treeView = new PrintStream(System.out); //new WriterOutputStream(writer));
         randomForest.dump(treeView);
 
-        System.out.println("average deviation" + deviation/samples);
+        System.out.println("average deviation" + deviation / samples);
         return;
     }
 
-    private double getInstanceProbability()  {
-            return maxProbabilityOfPositiveClassification * (1 - Math.exp(-stiffness*classificationVar) );
+    private double getInstanceProbability() {
+        return maxProbabilityOfPositiveClassification * (1 - Math.exp(-stiffness * classificationVar));
     }
 //        System.out.println("Probability of a click: " + randomForest.getProbability(HashMapAttributes.create("age", 11), "click"));
 
@@ -89,12 +90,12 @@ public class ProbDistOfSumOfIndepRandVars {
         this.maxDepth = maxDepth;
     }
 
-    private void initializeClassificationVariableProperties(double maxProbabilityOfPositiveClassification,int stdsAboveTheMeanForRelevance) {
+    private void initializeClassificationVariableProperties(double maxProbabilityOfPositiveClassification, int stdsAboveTheMeanForRelevance) {
         this.classificationSampler = new Random();
-        double standardDeviationOfUniformVariableOn0to1 = Math.sqrt(1.0/12);
+        double standardDeviationOfUniformVariableOn0to1 = Math.sqrt(1.0 / 12);
         double meanOfUniformVariableOn0to1 = 0.5;
         double standardDeviationOfClassificationVariable = standardDeviationOfUniformVariableOn0to1 / Math.sqrt(numPredictiveAttributes);
-        this.stiffness = 1/(meanOfUniformVariableOn0to1 + stdsAboveTheMeanForRelevance*standardDeviationOfClassificationVariable);
+        this.stiffness = 1 / (meanOfUniformVariableOn0to1 + stdsAboveTheMeanForRelevance * standardDeviationOfClassificationVariable);
         this.maxProbabilityOfPositiveClassification = maxProbabilityOfPositiveClassification;
     }
 
@@ -104,16 +105,16 @@ public class ProbDistOfSumOfIndepRandVars {
         return randomForestBuilder.buildPredictiveModel(trainingData);
     }
 
-    private  List<Instance> createTrainingData() {
+    private List<Instance> createTrainingData() {
 
         List<Instance> trainingData = Lists.newArrayList();
         double attributeValue;
         Instance instance;
         Attributes attributes;
-        for (int i = 0; i < instances; i++)  {
+        for (int i = 0; i < instances; i++) {
             attributes = new HashMapAttributes();
             classificationVar = 0;
-            for (int j = 0; j < numAttributes; j++)  {
+            for (int j = 0; j < numAttributes; j++) {
                 attributeValue = useAttribute(j);
                 attributes.put(Integer.toString(j), attributeValue);
             }
@@ -121,7 +122,7 @@ public class ProbDistOfSumOfIndepRandVars {
             normalizeClassificationVar();
             classify();
 
-            instance = new Instance(attributes, this.classification );
+            instance = new Instance(attributes, this.classification);
             trainingData.add(instance);
         }
         return trainingData;

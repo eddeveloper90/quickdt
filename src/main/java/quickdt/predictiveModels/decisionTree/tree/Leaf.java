@@ -12,22 +12,22 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Leaf extends Node {
-	private static final long serialVersionUID = -5617660873196498754L;
+    private static final long serialVersionUID = -5617660873196498754L;
 
     private static final AtomicLong guidCounter = new AtomicLong(0);
 
     public final long guid;
 
-	/**
-	 * How deep in the tree is this label? A lower number typically indicates a
-	 * more confident getBestClassification.
-	 */
-	public final int depth;
-	/**
-	 * How many training examples matched this leaf? A higher number indicates a
-	 * more confident getBestClassification.
-	 */
-	public double exampleCount;
+    /**
+     * How deep in the tree is this label? A lower number typically indicates a
+     * more confident getBestClassification.
+     */
+    public final int depth;
+    /**
+     * How many training examples matched this leaf? A higher number indicates a
+     * more confident getBestClassification.
+     */
+    public double exampleCount;
     /**
      * The actual getBestClassification counts
      */
@@ -38,7 +38,7 @@ public class Leaf extends Node {
     public Leaf(Node parent, final Iterable<? extends AbstractInstance> instances, final int depth) {
         this(parent, ClassificationCounter.countAll(instances), depth);
         Preconditions.checkArgument(!Iterables.isEmpty(instances), "Can't create leaf with no instances");
-	}
+    }
 
     public Leaf(Node parent, final ClassificationCounter classificationCounts, final int depth) {
         super(parent);
@@ -50,7 +50,6 @@ public class Leaf extends Node {
     }
 
     /**
-     *
      * @return The most likely classification
      */
 
@@ -70,35 +69,35 @@ public class Leaf extends Node {
         return bestClassificationEntry;
     }
 
-	@Override
-	public void dump(final int indent, final PrintStream ps) {
-		for (int x = 0; x < indent; x++) {
-			ps.print(' ');
-		}
-		ps.println(this);
-	}
+    @Override
+    public void dump(final int indent, final PrintStream ps) {
+        for (int x = 0; x < indent; x++) {
+            ps.print(' ');
+        }
+        ps.println(this);
+    }
 
-	@Override
-	public Leaf getLeaf(final Attributes attributes) {
-		return this;
-	}
+    @Override
+    public Leaf getLeaf(final Attributes attributes) {
+        return this;
+    }
 
-	@Override
-	public int size() {
-		return 1;
-	}
+    @Override
+    public int size() {
+        return 1;
+    }
 
-	@Override
-	protected void calcMeanDepth(final LeafDepthStats stats) {
-		stats.ttlDepth += depth * exampleCount;
-		stats.ttlSamples += exampleCount;
-	}
+    @Override
+    protected void calcMeanDepth(final LeafDepthStats stats) {
+        stats.ttlDepth += depth * exampleCount;
+        stats.ttlSamples += exampleCount;
+    }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         for (Serializable key : getClassifications()) {
-            builder.append(key+"="+this.getProbability(key)+" ");
+            builder.append(key + "=" + this.getProbability(key) + " ");
         }
         return builder.toString();
     }

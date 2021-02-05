@@ -35,7 +35,7 @@ public class SplitOnAttributePM implements PredictiveModel {
     @Override
     public void dump(final PrintStream printStream) {
         for (Map.Entry<Serializable, PredictiveModel> splitModelEntry : splitModels.entrySet()) {
-            printStream.println("Predictive model for "+attributeKey+"="+splitModelEntry.getKey());
+            printStream.println("Predictive model for " + attributeKey + "=" + splitModelEntry.getKey());
             splitModelEntry.getValue().dump(printStream);
         }
         printStream.println("Default");

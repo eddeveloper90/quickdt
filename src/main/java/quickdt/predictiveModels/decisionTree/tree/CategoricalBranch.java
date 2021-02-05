@@ -2,38 +2,39 @@ package quickdt.predictiveModels.decisionTree.tree;
 
 import com.google.common.collect.Sets;
 import quickdt.data.Attributes;
-import static quickdt.predictiveModels.decisionTree.TreeBuilder.*;
 
 import java.io.Serializable;
 import java.util.Set;
 
+import static quickdt.predictiveModels.decisionTree.TreeBuilder.MISSING_VALUE;
+
 public final class CategoricalBranch extends Branch {
-	private static final long serialVersionUID = -1723969623146234761L;
-	public final Set<Serializable> inSet;
+    private static final long serialVersionUID = -1723969623146234761L;
+    public final Set<Serializable> inSet;
 
-	public CategoricalBranch(Node parent, final String attribute, final Set<Serializable> inSet) {
-		super(parent, attribute);
-		this.inSet = Sets.newHashSet(inSet);
+    public CategoricalBranch(Node parent, final String attribute, final Set<Serializable> inSet) {
+        super(parent, attribute);
+        this.inSet = Sets.newHashSet(inSet);
 
-	}
+    }
 
-	@Override
-	public boolean decide(final Attributes attributes) {
-		    Serializable attributeVal = attributes.get(attribute);
-            if (attributeVal==null)
-                attributeVal = MISSING_VALUE;
+    @Override
+    public boolean decide(final Attributes attributes) {
+        Serializable attributeVal = attributes.get(attribute);
+        if (attributeVal == null)
+            attributeVal = MISSING_VALUE;
         return inSet.contains(attributeVal);
-	}
+    }
 
-	@Override
-	public String toString() {
-		return attribute + " in " + inSet;
-	}
+    @Override
+    public String toString() {
+        return attribute + " in " + inSet;
+    }
 
-	@Override
-	public String toNotString() {
-		return attribute + " not in " + inSet;
-	}
+    @Override
+    public String toNotString() {
+        return attribute + " not in " + inSet;
+    }
 
     @Override
     public boolean equals(final Object o) {

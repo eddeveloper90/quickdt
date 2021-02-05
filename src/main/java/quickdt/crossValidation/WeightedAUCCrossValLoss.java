@@ -8,7 +8,7 @@ import java.util.*;
 
 /**
  * AUCCrossValLoss calculates the ROC area over the curve to determine loss.
- *
+ * <p>
  * Created by Chris on 5/5/2014.
  */
 public class WeightedAUCCrossValLoss implements CrossValLoss {
@@ -54,8 +54,8 @@ public class WeightedAUCCrossValLoss implements CrossValLoss {
 
         ArrayList<AUCPoint> aucPoints = new ArrayList<AUCPoint>();
         double threshold = 0.0;
-        for(AUCData aucData : aucDataList) {
-            if(aucData.getClassification().equals(positiveClassification)) {
+        for (AUCData aucData : aucDataList) {
+            if (aucData.getClassification().equals(positiveClassification)) {
                 truePositives += aucData.getWeight();
             } else {
                 falsePositives += aucData.getWeight();
@@ -63,7 +63,7 @@ public class WeightedAUCCrossValLoss implements CrossValLoss {
         }
 
         //iterate through each data point updating all points that are changed by the threshold
-        for(AUCData aucData : aucDataList) {
+        for (AUCData aucData : aucDataList) {
             if (threshold != aucData.getProbability()) {
                 aucPoints.add(getAUCPoint(truePositives, falsePositives, trueNegatives, falseNegatives));
                 threshold = aucData.getProbability();
@@ -126,10 +126,10 @@ public class WeightedAUCCrossValLoss implements CrossValLoss {
 
         double sumXY = 0.0;
         //Area over curve OR AUCLoss = (2 - sum((x1-x0)(y1+y0)))/2
-        for(int i = 1; i < aucPoints.size(); i++) {
+        for (int i = 1; i < aucPoints.size(); i++) {
             AUCPoint aucPoint1 = aucPoints.get(i);
-            AUCPoint aucPoint0 = aucPoints.get(i-1);
-            sumXY += ((aucPoint1.getFalsePositiveRate() - aucPoint0.getFalsePositiveRate())*(aucPoint1.getTruePositiveRate()+aucPoint0.getTruePositiveRate()));
+            AUCPoint aucPoint0 = aucPoints.get(i - 1);
+            sumXY += ((aucPoint1.getFalsePositiveRate() - aucPoint0.getFalsePositiveRate()) * (aucPoint1.getTruePositiveRate() + aucPoint0.getTruePositiveRate()));
         }
         return (2.0 - sumXY) / 2.0;
     }

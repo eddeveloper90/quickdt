@@ -14,7 +14,10 @@ import quickdt.predictiveModels.decisionTree.TreeBuilder;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,26 +27,26 @@ import java.util.concurrent.*;
  * To change this template use File | Settings | File Templates.
  */
 public class RandomForestBuilder implements UpdatablePredictiveModelBuilder<RandomForest> {
-  private static final Logger logger = LoggerFactory.getLogger(RandomForestBuilder.class);
-  private final TreeBuilder treeBuilder;
-  private int numTrees = 20;
-  private int executorThreadCount = Runtime.getRuntime().availableProcessors();
-  private ExecutorService executorService;
-  private int baggingSampleSize = 0;
-  private Serializable id;
+    private static final Logger logger = LoggerFactory.getLogger(RandomForestBuilder.class);
+    private final TreeBuilder treeBuilder;
+    private int numTrees = 20;
+    private int executorThreadCount = Runtime.getRuntime().availableProcessors();
+    private ExecutorService executorService;
+    private int baggingSampleSize = 0;
+    private Serializable id;
 
     public RandomForestBuilder() {
-    this(new TreeBuilder().ignoreAttributeAtNodeProbability(0.5));
-  }
+        this(new TreeBuilder().ignoreAttributeAtNodeProbability(0.5));
+    }
 
-  public RandomForestBuilder(TreeBuilder treeBuilder) {
-    this.treeBuilder = treeBuilder;
-  }
+    public RandomForestBuilder(TreeBuilder treeBuilder) {
+        this.treeBuilder = treeBuilder;
+    }
 
-  public RandomForestBuilder numTrees(int numTrees) {
-    this.numTrees = numTrees;
-    return this;
-  }
+    public RandomForestBuilder numTrees(int numTrees) {
+        this.numTrees = numTrees;
+        return this;
+    }
 
     /**
      * Setting this to a value greater than zero will turn on bagging (see
@@ -54,21 +57,21 @@ public class RandomForestBuilder implements UpdatablePredictiveModelBuilder<Rand
      *                   the smaller of this value and the training set size.
      * @return
      */
-  public RandomForestBuilder withBagging(int sampleSize) {
-      Preconditions.checkArgument(sampleSize > -1, "Sample size must not be negative");
-      this.baggingSampleSize = sampleSize;
-      return this;
-  }
+    public RandomForestBuilder withBagging(int sampleSize) {
+        Preconditions.checkArgument(sampleSize > -1, "Sample size must not be negative");
+        this.baggingSampleSize = sampleSize;
+        return this;
+    }
 
-  public RandomForestBuilder executorThreadCount(int threadCount) {
-    this.executorThreadCount = threadCount;
-    return this;
-  }
+    public RandomForestBuilder executorThreadCount(int threadCount) {
+        this.executorThreadCount = threadCount;
+        return this;
+    }
 
-  public RandomForestBuilder updatable(boolean updatable) {
-      this.treeBuilder.updatable(updatable);
-      return this;
-  }
+    public RandomForestBuilder updatable(boolean updatable) {
+        this.treeBuilder.updatable(updatable);
+        return this;
+    }
 
     @Override
     public void setID(Serializable id) {
@@ -77,24 +80,24 @@ public class RandomForestBuilder implements UpdatablePredictiveModelBuilder<Rand
 
 
     public synchronized RandomForest buildPredictiveModel(final Iterable<? extends AbstractInstance> trainingData) {
-    executorService = Executors.newFixedThreadPool(executorThreadCount);
-    logger.info("Building random forest with {} trees", numTrees);
-    treeBuilder.setID(id);
+        executorService = Executors.newFixedThreadPool(executorThreadCount);
+        logger.info("Building random forest with {} trees", numTrees);
+        treeBuilder.setID(id);
 
-    List<Future<Tree>> treeFutures = Lists.newArrayListWithCapacity(numTrees);
-    List<Tree> trees = Lists.newArrayListWithCapacity(numTrees);
+        List<Future<Tree>> treeFutures = Lists.newArrayListWithCapacity(numTrees);
+        List<Tree> trees = Lists.newArrayListWithCapacity(numTrees);
 
-    // Submit all tree building jobs to the executor
-    for (int treeIndex = 0; treeIndex < numTrees; treeIndex++) {
-      Iterable<? extends AbstractInstance> treeTrainingData = shuffleTrainingData(trainingData);
-      treeFutures.add(submitTreeBuild(treeTrainingData, treeIndex));
+        // Submit all tree building jobs to the executor
+        for (int treeIndex = 0; treeIndex < numTrees; treeIndex++) {
+            Iterable<? extends AbstractInstance> treeTrainingData = shuffleTrainingData(trainingData);
+            treeFutures.add(submitTreeBuild(treeTrainingData, treeIndex));
+        }
+
+        // Collect all completed trees. Will block until complete
+        collectTreeFutures(trees, treeFutures);
+
+        return new RandomForest(trees);
     }
-
-    // Collect all completed trees. Will block until complete
-    collectTreeFutures(trees, treeFutures);
-
-    return new RandomForest(trees);
-  }
 
     public synchronized void updatePredictiveModel(RandomForest randomForest, final Iterable<? extends AbstractInstance> newData, List<? extends AbstractInstance> trainingData, boolean splitNodes) {
         executorService = Executors.newFixedThreadPool(executorThreadCount);
@@ -149,14 +152,14 @@ public class RandomForestBuilder implements UpdatablePredictiveModelBuilder<Rand
         return treeTrainingData;
     }
 
-  private Future<Tree> submitTreeBuild(final Iterable<? extends AbstractInstance> trainingData, final int treeIndex) {
-    return executorService.submit(new Callable<Tree>() {
-      @Override
-      public Tree call() throws Exception {
-        return buildModel(trainingData, treeIndex);
-      }
-    });
-  }
+    private Future<Tree> submitTreeBuild(final Iterable<? extends AbstractInstance> trainingData, final int treeIndex) {
+        return executorService.submit(new Callable<Tree>() {
+            @Override
+            public Tree call() throws Exception {
+                return buildModel(trainingData, treeIndex);
+            }
+        });
+    }
 
     private Future<Tree> submitTreeUpdate(final Tree tree, final Iterable<? extends AbstractInstance> newData, final int treeIndex, final List<? extends AbstractInstance> trainingData, final boolean splitNodes) {
         return executorService.submit(new Callable<Tree>() {
@@ -188,10 +191,10 @@ public class RandomForestBuilder implements UpdatablePredictiveModelBuilder<Rand
         return tree;
     }
 
-  private Tree buildModel(Iterable<? extends AbstractInstance> trainingData, int treeIndex) {
-    logger.debug("Building tree {} of {}", treeIndex, numTrees);
-    return treeBuilder.buildPredictiveModel(trainingData);
-  }
+    private Tree buildModel(Iterable<? extends AbstractInstance> trainingData, int treeIndex) {
+        logger.debug("Building tree {} of {}", treeIndex, numTrees);
+        return treeBuilder.buildPredictiveModel(trainingData);
+    }
 
 
     protected void collectTreeFutures(List<Tree> trees, List<Future<Tree>> treeFutures) {
@@ -202,11 +205,11 @@ public class RandomForestBuilder implements UpdatablePredictiveModelBuilder<Rand
         executorService.shutdown();
     }
 
-  private void collectTreeFutures(List<Tree> trees, Future<Tree> treeFuture) {
-    try {
-      trees.add(treeFuture.get());
-    } catch (Exception e) {
-      logger.error("Error retrieving tree", e);
+    private void collectTreeFutures(List<Tree> trees, Future<Tree> treeFuture) {
+        try {
+            trees.add(treeFuture.get());
+        } catch (Exception e) {
+            logger.error("Error retrieving tree", e);
+        }
     }
-  }
 }

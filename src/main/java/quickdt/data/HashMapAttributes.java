@@ -3,7 +3,10 @@ package quickdt.data;
 import com.google.common.collect.Maps;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public final class HashMapAttributes implements Attributes, Serializable {
 
@@ -20,12 +23,12 @@ public final class HashMapAttributes implements Attributes, Serializable {
     }
 
     public static Attributes create(final Serializable... inputs) {
-		final HashMapAttributes a = new HashMapAttributes();
-		for (int x = 0; x < inputs.length; x += 2) {
-			a.put((String) inputs[x], inputs[x + 1]);
-		}
-		return a;
-	}
+        final HashMapAttributes a = new HashMapAttributes();
+        for (int x = 0; x < inputs.length; x += 2) {
+            a.put((String) inputs[x], inputs[x + 1]);
+        }
+        return a;
+    }
 
     @Override
     public int size() {
@@ -88,7 +91,7 @@ public final class HashMapAttributes implements Attributes, Serializable {
     }
 
     @Override
-    public Set<Entry<String,Serializable>> entrySet() {
+    public Set<Entry<String, Serializable>> entrySet() {
         return delegatedHashMap.entrySet();
     }
 

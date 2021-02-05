@@ -9,12 +9,12 @@ import java.util.Map;
 /**
  * Created by chrisreeves on 6/24/14.
  */
-public class GiniImpurityScorer implements Scorer{
+public class GiniImpurityScorer implements Scorer {
     @Override
     public double scoreSplit(ClassificationCounter a, ClassificationCounter b) {
         ClassificationCounter parent = ClassificationCounter.merge(a, b);
         double parentGiniIndex = getGiniIndex(parent);
-        double aGiniIndex = getGiniIndex(a) * a.getTotal() / parent.getTotal() ;
+        double aGiniIndex = getGiniIndex(a) * a.getTotal() / parent.getTotal();
         double bGiniIndex = getGiniIndex(b) * b.getTotal() / parent.getTotal();
         return parentGiniIndex - aGiniIndex - bGiniIndex;
     }

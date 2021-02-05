@@ -6,8 +6,8 @@ import com.google.common.hash.Hashing;
 import quickdt.data.AbstractInstance;
 
 /**
-* Created by ian on 2/28/14.
-*/
+ * Created by ian on 2/28/14.
+ */
 public class AttributesHashSplitter implements Predicate<AbstractInstance> {
 
     private static final HashFunction hashFunction = Hashing.murmur3_32();

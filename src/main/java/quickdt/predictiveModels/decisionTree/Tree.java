@@ -53,6 +53,11 @@ public class Tree implements PredictiveModel {
         return leaf.getBestClassification();
     }
 
+    public Leaf getLeaf(Attributes attributes) {
+        Leaf leaf = node.getLeaf(attributes);
+        return leaf;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;

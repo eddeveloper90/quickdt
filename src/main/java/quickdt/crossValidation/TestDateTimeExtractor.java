@@ -9,9 +9,9 @@ import quickdt.data.Attributes;
  */
 public class TestDateTimeExtractor implements DateTimeExtractor {
     @Override
-    public DateTime extractDateTime(AbstractInstance instance){
+    public DateTime extractDateTime(AbstractInstance instance) {
         Attributes attributes = instance.getAttributes();
-        int currentTimeMillis = (Integer)attributes.get("currentTimeMillis");
+        int currentTimeMillis = (Integer) attributes.get("currentTimeMillis");
         return new DateTime(currentTimeMillis);
     }
 }

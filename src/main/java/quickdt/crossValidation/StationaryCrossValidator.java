@@ -16,7 +16,7 @@ import java.util.List;
  * Created by ian on 2/28/14.
  */
 public class StationaryCrossValidator extends CrossValidator {
-private static final  Logger logger =  LoggerFactory.getLogger(StationaryCrossValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(StationaryCrossValidator.class);
 
     private static final int DEFAULT_NUMBER_OF_FOLDS = 4;
     private int folds;
@@ -30,7 +30,8 @@ private static final  Logger logger =  LoggerFactory.getLogger(StationaryCrossVa
      */
     public StationaryCrossValidator() {
         this(StationaryCrossValidator.DEFAULT_NUMBER_OF_FOLDS, new RMSECrossValLoss());
-     }
+    }
+
     public StationaryCrossValidator(int folds) {
         this(folds, new RMSECrossValLoss());
     }
@@ -38,8 +39,10 @@ private static final  Logger logger =  LoggerFactory.getLogger(StationaryCrossVa
     public StationaryCrossValidator(int folds, int foldsUsed) {
         this(folds, foldsUsed, new RMSECrossValLoss());
     }
+
     /**
      * Create a new CrossValidator
+     *
      * @param folds The number folds to be used in the cross validation procedure
      */
     public StationaryCrossValidator(final int folds, CrossValLoss crossValLoss) {
@@ -60,15 +63,15 @@ private static final  Logger logger =  LoggerFactory.getLogger(StationaryCrossVa
     public double getCrossValidatedLoss(PredictiveModelBuilder<? extends PredictiveModel> predictiveModelBuilder, Iterable<? extends AbstractInstance> allTrainingData) {
         double runningLoss = 0;
         DataSplit dataSplit;
-        for (int currentFold = 0; currentFold < foldsUsed; currentFold++)  {
+        for (int currentFold = 0; currentFold < foldsUsed; currentFold++) {
             dataSplit = setTrainingAndValidationSets(currentFold, allTrainingData);
             PredictiveModel predictiveModel = predictiveModelBuilder.buildPredictiveModel(dataSplit.training);
-            runningLoss+=crossValLoss.getLoss(dataSplit.validation, predictiveModel);
-            logger.info("running loss: "+runningLoss);
+            runningLoss += crossValLoss.getLoss(dataSplit.validation, predictiveModel);
+            logger.info("running loss: " + runningLoss);
 
         }
         final double averageLoss = runningLoss / foldsUsed;
-        logger.info("Average loss: "+averageLoss);
+        logger.info("Average loss: " + averageLoss);
         return averageLoss;
     }
 
@@ -76,7 +79,7 @@ private static final  Logger logger =  LoggerFactory.getLogger(StationaryCrossVa
         DataSplit dataSplit = new DataSplit();
         int count = 0;
         for (AbstractInstance instance : data) {
-            if (count%folds == foldNumber) //(count > testSetLowerBound && count < testSetUpperBound)//
+            if (count % folds == foldNumber) //(count > testSetLowerBound && count < testSetUpperBound)//
                 dataSplit.validation.add(instance);
             else
                 dataSplit.training.add(instance);
@@ -85,7 +88,7 @@ private static final  Logger logger =  LoggerFactory.getLogger(StationaryCrossVa
         return dataSplit;
     }
 
-    class DataSplit  {
+    class DataSplit {
         public List<AbstractInstance> training;
         public List<AbstractInstance> validation;
 

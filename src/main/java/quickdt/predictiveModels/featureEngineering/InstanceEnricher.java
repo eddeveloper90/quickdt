@@ -1,7 +1,9 @@
 package quickdt.predictiveModels.featureEngineering;
 
 import com.google.common.base.Function;
-import quickdt.data.*;
+import quickdt.data.AbstractInstance;
+import quickdt.data.Attributes;
+import quickdt.data.Instance;
 
 import java.util.List;
 

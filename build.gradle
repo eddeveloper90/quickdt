@@ -14,7 +14,7 @@ plugins {
 
 group = 'quickdt'
 // artifactId is taken by default, from folder name
-version = '3.1.0'
+version = '1.0.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -74,4 +74,20 @@ task writeNewPom {
         }.writeTo("$buildDir/libs/pom.xml")
     }
 }
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
 
